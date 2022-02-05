@@ -3,20 +3,39 @@ using System.Collections.Generic;
 
 namespace HTTPParser
 {
-    public class Request
+    public class Request : HTTPmsg
     {
-        public Dictionary<string, string> ParseRequest(string msg)
+        public string method;
+        public string element;
+
+        
+        public Request(string msg)
+        {
+            ParseMsg(msg);
+        }
+        
+        public override string GetMsg()
+        {
+            string msg = string.Format("{0} {1} HTTP/1.1\r\n", method, element);
+            foreach(var h in headers)
+            {
+                msg += string.Format("{0}: {1}\r\n", h.Key, h.Value);
+            }
+            return msg + "\r\n" + body;
+        }
+
+        protected override void ParseMsg(string msg)
         {
             var parse = new Dictionary<string, string>();
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
             string body = s.Length > 1 ? s[1] : "";
-            parse.Add("Body", body);
+            this.body = body;
 
             string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            parse.Add("Method", firstRow[0]);
-            parse.Add("Element", firstRow[1]);
+            method = firstRow[0];
+            element = firstRow[1];
 
             char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
@@ -25,7 +44,7 @@ namespace HTTPParser
                 parse.Add(header[0], header[1]);
             }
 
-            return parse;
+            this.headers = parse;
         }
     }
 }
