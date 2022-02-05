@@ -25,6 +25,7 @@ namespace HTTPParser
 
         protected override void ParseMsg(string msg)
         {
+            msg = msg.ToLower();
             var parse = new Dictionary<string, string>();
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
