@@ -8,7 +8,7 @@ namespace HTTPParser
         public string method;
         public string element;
 
-        
+        public Request(){}
         public Request(string msg)
         {
             ParseMsg(msg);

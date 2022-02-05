@@ -7,7 +7,7 @@ namespace HTTPParser
     public class Response : HTTPmsg
     {
         public int code;
-
+        public Response(){}
         public Response(string msg)
         {
             ParseMsg(msg);

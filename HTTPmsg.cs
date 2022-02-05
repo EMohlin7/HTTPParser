@@ -5,8 +5,8 @@ namespace HTTPParser
 {
     public abstract class HTTPmsg
     {
-        protected Dictionary<string, string> headers;
-        public string body;
+        protected Dictionary<string, string> headers = new Dictionary<string, string>();
+        public string body = "";
 
         public bool HeaderExists(string header)
         {
@@ -19,6 +19,17 @@ namespace HTTPParser
                 headers.Add(header, value);
             else
                 headers[header] = value;
+        }
+
+        public string GetHeader(string header)
+        {
+            return headers[header];
+        }
+        public bool TryGetHeader(string header, out string value)
+        {
+            bool exists = HeaderExists(header);
+            value = exists ? headers[header] : "";
+            return exists;
         }
 
         public string RemoveHeader(string header)
