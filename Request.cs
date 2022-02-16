@@ -42,7 +42,8 @@ namespace HTTPParser
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
                 string[] header = headers[i].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                parse.Add(header[0], header[1]);
+                if(!HeaderExists(header[0]))
+                    parse.Add(header[0], header[1]);
             }
 
             this.headers = parse;

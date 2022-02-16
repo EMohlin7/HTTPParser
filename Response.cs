@@ -8,6 +8,10 @@ namespace HTTPParser
     {
         public int code;
         public Response(){}
+        public Response(int code)
+        {
+            this.code = code;
+        }
         public Response(string msg)
         {
             ParseMsg(msg);
