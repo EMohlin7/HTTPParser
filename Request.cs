@@ -38,10 +38,10 @@ namespace HTTPParser
             method = firstRow[0];
             element = firstRow[1];
 
-            char[] separators = new char[] {':', ' '};
+            //char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
-                string[] header = headers[i].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
                 if(!HeaderExists(header[0]))
                     parse.Add(header[0], header[1]);
             }

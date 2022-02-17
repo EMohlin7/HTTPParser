@@ -43,10 +43,10 @@ namespace HTTPParser
             else
                 throw new Exception(string.Format("\"{0}\" is not a valid HTTP code", firstRow[1]));
             
-            char[] separators = new char[] {':', ' '};
+            //char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
-                string[] header = headers[i].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
                 parse.Add(header[0], header[1]);
             }
 
