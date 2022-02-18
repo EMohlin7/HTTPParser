@@ -1,11 +1,13 @@
 
+using System;
 using System.Collections.Generic;
 
 namespace HTTPParser
 {
     public abstract class HTTPmsg
     {
-        protected Dictionary<string, string> headers = new Dictionary<string, string>();
+        protected Dictionary<string, string> headers = new Dictionary<string, string>(
+            StringComparer.InvariantCultureIgnoreCase); //Makes the dictionary case-insensitive
         public string body = "";
 
         public bool HeaderExists(string header)

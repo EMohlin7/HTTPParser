@@ -26,8 +26,6 @@ namespace HTTPParser
 
         protected override void ParseMsg(string msg)
         {
-            msg = msg.ToLower();
-            var parse = new Dictionary<string, string>();
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
             string body = s.Length > 1 ? s[1] : "";
@@ -42,11 +40,8 @@ namespace HTTPParser
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
                 string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
-                if(!HeaderExists(header[0]))
-                    parse.Add(header[0], header[1]);
+                SetHeader(header[0], header[1]);
             }
-
-            this.headers = parse;
         }
     }
 }
