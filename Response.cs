@@ -12,10 +12,7 @@ namespace HTTPParser
         {
             this.code = code;
         }
-        public Response(string msg)
-        {
-            ParseMsg(msg);
-        }
+        
 
         public override string GetMsg()
         {
@@ -27,29 +24,35 @@ namespace HTTPParser
             return msg + "\r\n" + body;
         }
 
-        protected override void ParseMsg(string msg)
+        public static bool TryParseMsg(string msg, out Response res)
         {
+            int code;
+            res = null;
             var parse = new Dictionary<string, string>();
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
             string body = s.Length > 1 ? s[1] : "";
-            this.body = body;
+            res.body = body;
 
             string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            if(int.TryParse(firstRow[1], out int result))
+            if (int.TryParse(firstRow[1], out int result))
                 code = result;
             else
-                throw new Exception(string.Format("\"{0}\" is not a valid HTTP code", firstRow[1]));
+                return false;
             
             //char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
                 string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
-                parse.Add(header[0], header[1]);
+                if(header.Length == 2)
+                    parse.Add(header[0], header[1]);
             }
 
-            this.headers = parse;
+            res = new Response(200);
+            res.code = code;
+            res.headers = parse;
+            return true;
         }
 
         

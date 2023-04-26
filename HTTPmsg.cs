@@ -40,7 +40,5 @@ namespace HTTPParser
         }
 
         public abstract string GetMsg();
-
-        protected abstract void ParseMsg(string msg);
     }
 }

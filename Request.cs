@@ -8,11 +8,8 @@ namespace HTTPParser
         public string method;
         public string element;
 
-        public Request(){}
-        public Request(string msg)
-        {
-            ParseMsg(msg);
-        }
+
+        public Request() { }
         
         public override string GetMsg()
         {
@@ -24,24 +21,33 @@ namespace HTTPParser
             return msg + "\r\n" + body;
         }
 
-        protected override void ParseMsg(string msg)
+        public static bool TryParseMsg(string msg, out Request req)
         {
+            req = null;
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
             string body = s.Length > 1 ? s[1] : "";
-            this.body = body;
+            
 
             string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            method = firstRow[0];
-            element = firstRow[1];
+            string method = firstRow[0];
+            if(firstRow.Length <= 1)
+                return false;
 
+            req.element = firstRow[1];
+            
             //char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
                 string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
-                SetHeader(header[0], header[1]);
+                if(header.Length == 2) 
+                    req.SetHeader(header[0], header[1]);
             }
+
+            req.body = body;
+            req.method = method;
+            return true;
         }
     }
 }
