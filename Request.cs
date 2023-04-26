@@ -35,8 +35,10 @@ namespace HTTPParser
             if(firstRow.Length <= 1)
                 return false;
 
-            req.element = firstRow[1];
+            string element = firstRow[1];
             
+
+            req = new Request();
             //char[] separators = new char[] {':', ' '};
             for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
             {
@@ -45,6 +47,7 @@ namespace HTTPParser
                     req.SetHeader(header[0], header[1]);
             }
 
+            req.element = element;
             req.body = body;
             req.method = method;
             return true;

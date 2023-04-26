@@ -32,7 +32,6 @@ namespace HTTPParser
             string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
             string head = s[0];
             string body = s.Length > 1 ? s[1] : "";
-            res.body = body;
 
             string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
             string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -49,9 +48,9 @@ namespace HTTPParser
                     parse.Add(header[0], header[1]);
             }
 
-            res = new Response(200);
-            res.code = code;
+            res = new Response(code);
             res.headers = parse;
+            res.body = body;
             return true;
         }
 
