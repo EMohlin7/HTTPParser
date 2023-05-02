@@ -28,32 +28,38 @@ namespace HTTPParser
         {
             int code;
             res = null;
-            var parse = new Dictionary<string, string>();
-            string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
-            string head = s[0];
-            string body = s.Length > 1 ? s[1] : "";
-
-            string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
-            string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            if (int.TryParse(firstRow[1], out int result))
-                code = result;
-            else
-                return false;
-            
-            //char[] separators = new char[] {':', ' '};
-            for(int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
+            try
             {
-                string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
-                if(header.Length == 2)
-                    parse.Add(header[0], header[1]);
+                var parse = new Dictionary<string, string>();
+                string[] s = msg.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
+                string head = s[0];
+                string body = s.Length > 1 ? s[1] : "";
+
+                string[] headers = head.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+                string[] firstRow = headers[0].Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                if (int.TryParse(firstRow[1], out int result))
+                    code = result;
+                else
+                    return false;
+
+                //char[] separators = new char[] {':', ' '};
+                for (int i = 1; i < headers.Length; ++i)  //Skip the first row of the request since it has a different format 
+                {
+                    string[] header = headers[i].Split(": ", StringSplitOptions.RemoveEmptyEntries);
+                    if (header.Length == 2)
+                        parse.Add(header[0], header[1]);
+                }
+
+                res = new Response(code);
+                res.headers = parse;
+                res.body = body;
+                return true;
             }
-
-            res = new Response(code);
-            res.headers = parse;
-            res.body = body;
-            return true;
+            catch(IndexOutOfRangeException)
+            {
+                res = null;
+                return false;
+            }
         }
-
-        
     }
 }
